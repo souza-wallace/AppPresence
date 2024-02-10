@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\PresenceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +23,17 @@ use App\Http\Controllers\AuthController;
 // });
 
 Route::post('/auth/login', [AuthController::class, 'login']);
+Route::get('/auth/logout', [AuthController::class, 'logout'])->middleware('auth');
+
+
+Route::get('/presence-request', [PresenceController::class, 'presenceRequest'])->middleware('auth');
+Route::get('/pending', [PresenceController::class, 'pending'])->middleware('auth');
+Route::post('/confirm/{presence}', [PresenceController::class, 'confirm'])->middleware('auth');
+Route::post('/refuse/{presence}', [PresenceController::class, 'refuse'])->middleware('auth');
+Route::get('/historic/{user}', [PresenceController::class, 'historic'])->middleware('auth');
+Route::get('/presences', [PresenceController::class, 'presences'])->middleware('auth');
+
+
 
 Route::apiResources(['users' => UserController::class]);
 
