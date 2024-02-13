@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Presence extends Model
 {
@@ -15,10 +16,9 @@ class Presence extends Model
     }
 
     public static function verifyPresence($userId){
-        $presencesUser = self::where('user_id', $userId)->get();
-    
-        $today = now()->format('Y-m-d');
-        $hasPresenceToday = $presencesUser->contains('created_at', '=', $today);
+        $today = Carbon::today()->toDateString();
+
+        $hasPresenceToday = self::where('user_id', $userId)->whereDate('created_at', $today)->get();
     
         return [
             'hasPresenceToday' => $hasPresenceToday,
