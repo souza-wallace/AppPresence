@@ -82,7 +82,7 @@ class AuthController extends Controller
             'user' => $user,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Carbon::now()->addWeeks(1)
+            'expires_in' => null
         ]);
     }
 }
