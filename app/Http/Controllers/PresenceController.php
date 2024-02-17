@@ -71,29 +71,31 @@ class PresenceController extends Controller
         return $presence;
     }
 
-    public function historic(Request $request, User $user, Presence $presence)
+    public function historic(Request $request, Presence $presence)
     {
         $user = auth()->user();
-        $userWithPresences = $user::with('presences')->get();
-        $presences = $userWithPresences[0]->presences;
+
+        $presencesQuery = $presence::with('user')->where('status', '!=', 'pending');
     
-        if ($request->input('month') == 1) {
-            $presences = Presence::where('user_id', $user->id)
-                ->whereYear('created_at', '=', now()->subMonth()->year)
-                ->whereMonth('created_at', '=', now()->subMonth()->month)
-                ->get()
-                ->groupBy(function ($date) {
-                    return Carbon::parse($date->created_at)->format('m');
-                });
+        if ($request->has('month')) {
+            $month = $request->input('month');
+            if ($month != 'all') {
+                $presencesQuery->whereMonth('created_at', $month);
+            }
         }
     
-        if ($request->input('day') == 1) {
-            $presences = Presence::where('user_id', $user->id)
-                ->whereDate('created_at', '=', now()->subDay()->toDateString())
-                ->get()
-                ->groupBy(function ($date) {
-                    return Carbon::parse($date->created_at)->format('d');
-                });
+        if ($request->has('name')) {
+            $name = $request->input('name');
+            $presencesQuery->whereHas('user', function ($query) use ($name) {
+                $query->where('name', 'like', '%' . $name . '%');
+            });
+        }
+    
+        $presences = $presencesQuery->orderBy('created_at')->get();
+
+        if ($user->role == 'student') {
+            $userWithPresences = $user->load('presences');
+            $presences = $userWithPresences->presences;
         }
     
         return $presences;

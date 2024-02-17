@@ -30,7 +30,7 @@ Route::get('/presence-request', [PresenceController::class, 'presenceRequest'])-
 Route::get('/pending', [PresenceController::class, 'pending'])->middleware('auth');
 Route::get('/confirm/{presence}', [PresenceController::class, 'confirm'])->middleware('auth');
 Route::get('/refuse/{presence}', [PresenceController::class, 'refuse'])->middleware('auth');
-Route::get('/historic/{user}', [PresenceController::class, 'historic'])->middleware('auth');
+Route::get('/historic', [PresenceController::class, 'historic'])->middleware('auth');
 Route::get('/presences', [PresenceController::class, 'presences'])->middleware('auth');
 Route::get('/data-user', [PresenceController::class, 'dataUser'])->middleware('auth');
 
