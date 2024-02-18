@@ -14,16 +14,21 @@ class UserController extends Controller
      */
     public function index(User $user)
     {
-        $user = auth()->user();
-        
-        if ($user->role != 'teacher') {
+        $loggedInUser = auth()->user();
+        if ($loggedInUser->role != 'teacher') {
             return ['Usuário sem permissão para esta ação'];
         }
-        
-        $users = $user::with('presences')->where('role', 'student')->orderBy('name')->get();
-    
+
+        $users = $user::with(['presences' => function ($query) {
+                $query->where('status', 'confirmed');
+            }])
+            ->where('role', 'student')
+            ->orderBy('name')
+            ->get();
+
         return $users;
     }
+
 
     /**
      * Store a newly created resource in storage.
