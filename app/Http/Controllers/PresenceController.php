@@ -10,7 +10,7 @@ use Carbon\Carbon;
 
 class PresenceController extends Controller
 {
-
+    public $hours = ["6:00","8:30","10:30","16:30","17:30","20:00"];
     public $confirmed = 'confirmed';
     public $refused = 'refused';
     public $pending = 'pending';
@@ -23,6 +23,11 @@ class PresenceController extends Controller
 
         if(count($hasPresenceToday) != 0){
             return 'Ja pediu presença na data '.now()->format('Y-m-d');
+        }
+
+        $result = Presence::verifyHour($this->hours);
+        if(!$result){
+            return 'Fora do horário de aula';
         }
 
         $presence->user_id = $user->id;

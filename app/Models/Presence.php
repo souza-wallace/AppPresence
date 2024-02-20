@@ -24,5 +24,22 @@ class Presence extends Model
             'hasPresenceToday' => $hasPresenceToday,
         ];
     }
+
+    public static function verifyHour($hours){
+        $currentHour = Carbon::now()->format('H');
+        $foundHour = false;
+
+        foreach ($hours as $hour) {
+            $hourParts = explode(':', $hour);
+            $hourValue = $hourParts[0];
+
+
+            if($currentHour >= $hourValue && $currentHour <= $hourValue){
+                $foundHour = true;
+            }
+        }
+
+        return $foundHour;
+    }
     
 }
