@@ -34,7 +34,7 @@ class Presence extends Model
             $hourValue = $hourParts[0];
 
 
-            if($currentHour >= $hourValue && $currentHour <= $hourValue){
+            if($currentHour >= $hourValue && $currentHour <= $hourValue+2){
                 $foundHour = true;
             }
         }
