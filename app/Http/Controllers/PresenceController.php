@@ -23,7 +23,7 @@ class PresenceController extends Controller
         // return count($hasPresenceToday);
 
         if(count($hasPresenceToday) != 0){
-            return 'Ja pediu presença na data '.now()->format('Y-m-d');
+            return 'Ja pediu presença na data '.now()->format('d/m/Y');
         }
 
         $result = Presence::verifyHour($this->hours);
