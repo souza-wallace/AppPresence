@@ -19,7 +19,6 @@ class Presence extends Model
         $today = Carbon::today()->toDateString();
 
         $hasPresenceToday = self::where('user_id', $userId)->whereDate('created_at', $today)->get();
-    
         return [
             'hasPresenceToday' => $hasPresenceToday,
         ];
@@ -34,7 +33,7 @@ class Presence extends Model
             $hourValue = $hourParts[0];
 
 
-            if($currentHour >= $hourValue && $currentHour <= $hourValue+2){
+            if($currentHour >= $hourValue && $currentHour <= $hourValue+3){
                 $foundHour = true;
             }
         }

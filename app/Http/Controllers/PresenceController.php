@@ -20,6 +20,7 @@ class PresenceController extends Controller
 
         $result = Presence::verifyPresence($user->id);
         $hasPresenceToday = $result['hasPresenceToday'];
+        // return count($hasPresenceToday);
 
         if(count($hasPresenceToday) != 0){
             return 'Ja pediu presença na data '.now()->format('Y-m-d');
@@ -47,21 +48,25 @@ class PresenceController extends Controller
         return $presence::with('user')->where('status', 'pending')->orderBy('created_at', 'asc')->get();
     }
 
-    public function confirm(Presence $presence){
+    public function confirm(Presence $presence, Request $request){
         $user = auth()->user();
 
         if($user->role != 'teacher'){
             return ['Usuario sem permissáo para realizar essa ação'];
         }
 
-        $presence->status = 'confirmed';
-        $presence->updated_at = Carbon::now();
-        $presence->save();
+        $presences = Presence::whereIn('id', $request->ids)->get();
+
+        foreach ($presences as $key => $presence) {
+            $presence->status = 'confirmed';
+            $presence->updated_at = Carbon::now();
+            $presence->save();
+        }
 
         return $presence;
     }
 
-    public function refuse(Presence $presence){
+    public function refuse(Presence $presence, Request $request){
        
         $user = auth()->user();
 
@@ -69,9 +74,13 @@ class PresenceController extends Controller
             return ['Usuario sem permissáo para realizar essa ação'];
         }
 
-        $presence->status = 'refused';
-        $presence->updated_at = Carbon::now();
-        $presence->save();
+        $presences = Presence::whereIn('id', $request->ids)->get();
+
+        foreach ($presences as $key => $presence) {
+            $presence->status = 'confirmed';
+            $presence->updated_at = Carbon::now();
+            $presence->save();
+        }
 
         return $presence;
     }
