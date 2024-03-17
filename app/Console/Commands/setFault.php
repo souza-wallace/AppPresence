@@ -28,7 +28,7 @@ class setFault extends Command
     /**
      * Execute the console command.
      */
-    public function handle(Presence $presence, User $user)
+    public function handle(User $user)
     {
         $users = $user::with('presences')->get();
         $currentDate = Carbon::now()->format('Y-m-d');
@@ -36,8 +36,8 @@ class setFault extends Command
         foreach ($users as $user) {
             $hasPresenceToday = false;
 
-            foreach ($user->presences as $presence) {
-                $presenceDate = $presence->created_at->format('Y-m-d');
+            foreach ($user->presences as $p) {
+                $presenceDate = $p->created_at->format('Y-m-d');
 
                 if ($presenceDate == $currentDate) {
                     $hasPresenceToday = true;
@@ -46,9 +46,11 @@ class setFault extends Command
             }
 
             if (!$hasPresenceToday) {
-                $presence->user_id = $user->id;
-                $presence->status = 'refused';
-                $presence->save();
+                $presence = Presence::create([
+                    'user_id' => $user->id,
+                    'status' => 'refused',
+                ]);
+                
 
                 Log::info('Criou falta para o usuario: '. $user->id);
 

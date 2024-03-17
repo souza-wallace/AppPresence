@@ -9,6 +9,7 @@ use Carbon\Carbon;
 class Presence extends Model
 {
     use HasFactory;
+    protected $fillable = ['status', 'user_id'];
 
     public function user()
     {
