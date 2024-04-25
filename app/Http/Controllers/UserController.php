@@ -35,6 +35,8 @@ class UserController extends Controller
      */
     public function store(Request $request, User $user)
     {
+        $loggedInUser = auth()->user();
+
         $user->name = $request->name;
         $user->password = Hash::make($request->password);
         $user->email = $request->email;
@@ -48,17 +50,43 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        //
+        $loggedInUser = auth()->user();
+    
+        $userWithAddress = User::with('address')->find($user->id);
+        return $userWithAddress;
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $loggedInUser = auth()->user();
+
+        $user->name = $request->name;
+        $user->password = Hash::make($request->password);
+        $user->email = $request->email;
+        $addressData = [
+            'street' => $request->street,
+            'city' => $request->city,
+            'state' => $request->state,
+            'number' => $request->number,
+            'neighborhood' => $request->neighborhood
+        ];
+
+        $user->save();
+
+        $address = $user->address;
+
+        if(isset($address)){
+            $address->update($addressData);
+        } else{
+            $user->address()->create($addressData);
+        }
+
+        return $user;
     }
 
     /**
