@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PresenceController;
+use App\Http\Controllers\SessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,4 @@ Route::get('/data-user', [PresenceController::class, 'dataUser'])->middleware('a
 
 
 Route::apiResources(['users' => UserController::class]);
-
-
-
+Route::apiResources(['sessions' => SessionController::class]);
